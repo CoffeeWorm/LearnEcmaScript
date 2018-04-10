@@ -14,31 +14,30 @@ JavaScript 没有接口等，只能进行实体继承
 -  在通过原型来实现继承时，原型实际上会变成另一个类型的实例。原先的实例属性也就变成了现在的原型属性。
 -  没有办法在不影响所有对象实例的情况下，给超类型的构造函数传递参。
 
-	
-	function Animal(type, sex, age) {
-	  this.type = type;
-	  this.sex = sex;
-	  this.age = age;
-	  this.breathe = function() {
-	    console.log('I believe I can breathe!');
-	  }
-	}
-	
-	Animal.prototype.alive = function() {
-	  console.log('I am living in the world!');
-	}
-	
-	function Bird() {}
-	Bird.prototype = new Animal('flyer', 'female', 20);
-	
-	var bird = new Bird();
-	console.log(bird, bird.type, bird.sex, bird.age); //Animal {} 'flyer' 'female' 20
-	bird.type = '百灵鸟';
-	bird.skill = 'fly';
-	console.log(bird, bird.type, bird.sex, bird.age); //Animal { type: '百灵鸟', skill: 'fly' } '百灵鸟' 'female' 20
-	bird.breathe(); //I believe I can breathe!
-	console.log(bird instanceof Animal); // true
-	console.log(bird instanceof Object); // true
+		function Animal(type, sex, age) {
+		  this.type = type;
+		  this.sex = sex;
+		  this.age = age;
+		  this.breathe = function() {
+		    console.log('I believe I can breathe!');
+		  }
+		}
+
+		Animal.prototype.alive = function() {
+		  console.log('I am living in the world!');
+		}
+
+		function Bird() {}
+		Bird.prototype = new Animal('flyer', 'female', 20);
+
+		var bird = new Bird();
+		console.log(bird, bird.type, bird.sex, bird.age); //Animal {} 'flyer' 'female' 20
+		bird.type = '百灵鸟';
+		bird.skill = 'fly';
+		console.log(bird, bird.type, bird.sex, bird.age); //Animal { type: '百灵鸟', skill: 'fly' } '百灵鸟' 'female' 20
+		bird.breathe(); //I believe I can breathe!
+		console.log(bird instanceof Animal); // true
+		console.log(bird instanceof Object); // true
 
 ## 利用call借用构造函数进行继承
 
@@ -49,31 +48,31 @@ JavaScript 没有接口等，只能进行实体继承
 -  可以在子类型构造函数中向超类型构造函数传递参数
 
 	
-	function Person(name, sex, age) {
-	  this.name = name;
-	  this.sex = sex;
-	  this.age = age;
-	  this.speak = function() {
-	    console.log(this.name, this.sex, this.age);
-	  }
-	}
-	
-	Person.prototype = {
-	  constructor: Person,
-	  say: function() {
-	    console.log(this.name);
-	  }
-	}
-	
-	function whitePerson(name, sex, age, skill) {
-	  Person.apply(this, arguments);
-	  this.skill = skill;
-	}
-	
-	var alex = new whitePerson('alex', 'nan', 18, 'java');
-	console.log(alex); //whitePerson {  name: 'alex',  sex: 'nan',  age: 18,  speak: [Function],  skill: 'java' }
-	alex.speak(); // alex nan 18
-	//alex.say(); //alex.say is not a function
+		function Person(name, sex, age) {
+		  this.name = name;
+		  this.sex = sex;
+		  this.age = age;
+		  this.speak = function() {
+		    console.log(this.name, this.sex, this.age);
+		  }
+		}
+
+		Person.prototype = {
+		  constructor: Person,
+		  say: function() {
+		    console.log(this.name);
+		  }
+		}
+
+		function whitePerson(name, sex, age, skill) {
+		  Person.apply(this, arguments);
+		  this.skill = skill;
+		}
+
+		var alex = new whitePerson('alex', 'nan', 18, 'java');
+		console.log(alex); //whitePerson {  name: 'alex',  sex: 'nan',  age: 18,  speak: [Function],  skill: 'java' }
+		alex.speak(); // alex nan 18
+		//alex.say(); //alex.say is not a function
 
 ## 组合继承 最常用
 
@@ -167,25 +166,25 @@ JavaScript 没有接口等，只能进行实体继承
 - 不必为了指定子类型的原型而调用超类型的构造函数，避免了在超类的原型上面创建不必要的、多余的属性。与此同时，原型链还能保持不变
 	
 
-	function inheritPrototype(subType, superType) {
-	  var prototype = Object.create(superType.prototype); //创建对象
-	  prototype.constructor = subType; //增强对象
-	  subType.prototype = prototype; //指定对象
-	}
-	
-	function SuperType(name) {
-	  this.name = name;
-	  this.colors = ["red", "blue", "green"];
-	}
-	SuperType.prototype.sayName = function() {
-	  console.log(this.name);
-	};
-	
-	function SubType(name, age) {
-	  SuperType.call(this, name);
-	  this.age = age;
-	}
-	inheritPrototype(SubType, SuperType);
-	SubType.prototype.sayAge = function() {
-	  console.log(this.age);
-	};
+		function inheritPrototype(subType, superType) {
+		  var prototype = Object.create(superType.prototype); //创建对象
+		  prototype.constructor = subType; //增强对象
+		  subType.prototype = prototype; //指定对象
+		}
+
+		function SuperType(name) {
+		  this.name = name;
+		  this.colors = ["red", "blue", "green"];
+		}
+		SuperType.prototype.sayName = function() {
+		  console.log(this.name);
+		};
+
+		function SubType(name, age) {
+		  SuperType.call(this, name);
+		  this.age = age;
+		}
+		inheritPrototype(SubType, SuperType);
+		SubType.prototype.sayAge = function() {
+		  console.log(this.age);
+		};
